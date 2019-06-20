@@ -74,8 +74,15 @@ router.get('/users/:id',auth , async (req, res) => {
 router.get('/users/filter/:name',auth , async (req, res) => {   
     const _name = req.params.name 
     try{
-        const user = await User.find({'name': _name})
-        res.send(user)
+        const user = await User.aggregate([
+            { $match : { name : _name } }
+        ])
+        if(user.toString() !== ""){
+            res.status(201).send(user)
+        }else{
+            res.status(400).send('Not Found')
+        }
+        
     }catch (error) {
         res.status(500).send(error)
     }    
