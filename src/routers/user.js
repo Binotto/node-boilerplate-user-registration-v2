@@ -23,8 +23,13 @@ router.get('/users', auth, async (req, res) => {
         if (req.query.deleted === 'true'){
             users = await User.find({ deleted: true })
         }
-        if(req.query.limit >= 0 && req.query.skip >= 0){
-            users = await User.find({}).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
+        if(req.query.limit >= 0 && req.query.skip >= 0 && req.query.limit !== "" && req.query.skip !== ""){
+            users = await User.aggregate([
+                { $skip : parseInt(req.query.skip)},
+                { $limit : parseInt(req.query.limit)}
+                
+            ])
+            //users = await User.find({}).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
         }
         res.status(201).send(users)
     }catch (error) {
