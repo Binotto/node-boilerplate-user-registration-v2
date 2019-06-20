@@ -31,12 +31,25 @@ router.get('/users', auth, async (req, res) => {
         res.status().send(error)
     }    
 })
+
+//Last Updates
 router.get('/users/lastUpdates', auth, async (req, res) => { 
     try{
         const users = await User.aggregate([
             { $sort : { updatedAt : -1}},
             { $limit : 2},
             { $project : { _id: 0, tokens: 1} }
+        ])
+        res.status(201).send(users)
+    }catch (error) {
+        res.status().send(error)
+    }   
+})
+//
+router.get('/users/allRegisteredUsersByName', auth, async (req, res) => { 
+    try{
+        const users = await User.aggregate([
+            { $project : { _id: 0, name : 1 } }
         ])
         res.status(201).send(users)
     }catch (error) {
