@@ -49,7 +49,7 @@ router.get('/users/lastUpdates', auth, async (req, res) => {
         const users = await User.aggregate([
             { $sort : { updatedAt : -1}},
             { $limit : 2},
-            { $project : { _id: 0, tokens: 1} }
+            { $project : { _id: 0, name: "$name"} }
         ])
         res.status(201).send(users)
     }catch (error) {
