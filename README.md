@@ -4,7 +4,7 @@ https://github.com/Binotto/node-boilerplate-user-registration-v1 :octocat:
 Comando para efetuar um clone desse repositório:
 
 ```sh
- git clone https://github.com/Binotto/mongodb-pipeline-aggregations-stages.git
+ git clone https://github.com/Binotto/node-boilerplate-user-registration-v2.git
 
 ```
 
