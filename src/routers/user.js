@@ -43,7 +43,7 @@ router.get('/users', auth, async (req, res) => {
     }    
 })
 
-//Last Updates
+//Last Updates I
 router.get('/users/lastUpdates', auth, async (req, res) => { 
     try{
         const users = await User.aggregate([
@@ -56,7 +56,44 @@ router.get('/users/lastUpdates', auth, async (req, res) => {
         res.status().send(error)
     }   
 })
-//
+//Last Updated II
+// GET /users/last?tokens=<number>
+router.get('/users/last', auth, async (req, res) => {
+    let users; 
+    try{
+        users = await User.aggregate([ 
+            { $sort : { updatedAt : -1}},
+            { $unwind : "$tokens" },
+            { $limit : 1},
+            { $project : 
+                { 
+                    _id : "$name",
+                    updatedAt: "$updatedAt",
+                    token: "$tokens"
+                } 
+            }
+        ])
+        if (parseInt(req.query.tokens) >= 0 && parseInt(req.query.tokens) !== ""){
+            users = await User.aggregate([ 
+                { $sort : { updatedAt : -1}},
+                { $unwind : "$tokens" },
+                { $limit : parseInt(req.query.tokens)},
+                { $project : 
+                    { 
+                        _id : "$name",
+                        updatedAt: "$updatedAt",
+                        token: "$tokens"
+                    } 
+                }
+            ])
+        }
+        res.status(201).send(users)
+    }catch (error) {
+        res.status().send(error)
+    }   
+})
+
+//All Registered Users By Name
 router.get('/users/allRegisteredUsersByName', auth, async (req, res) => { 
     try{
         const users = await User.aggregate([
